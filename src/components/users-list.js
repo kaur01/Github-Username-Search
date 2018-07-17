@@ -5,6 +5,9 @@ import {bindActionCreators} from 'redux';
 import {refreshUsers} from '../actions/index.js';
 
 class UsersList extends Component {
+    state = {
+        followers: 0
+    }
     async getUsers(txt){
             let res = await fetch(`https://api.github.com/search/users?q=${txt}`)
             res =  await res.json()
@@ -14,6 +17,13 @@ class UsersList extends Component {
                 totalCount: res.total_count,
                 users: res.items
             }) : undefined;
+    }
+
+    async getFollowers(txt){
+      let response = await fetch(`https://api.github.com/users/${txt}`)
+      response =  await response.json()
+      this.setState({followers:response.followers})
+      console.log(this.state.followers)
     }
     render(){
         return(
@@ -25,7 +35,7 @@ class UsersList extends Component {
                     this.props.users.users.length > 0 ?
                     this.props.users.users.map((item,index) => {
               return(
-                        <li key={index}>{item.login}</li>
+                        <li key={index} onClick={(e) => this.getFollowers(item.login)}>{item.login}</li>
               );
             }) : undefined
             }

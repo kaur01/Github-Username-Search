@@ -4,3 +4,10 @@ export const refreshUsers = (res) => {
       payload: res
     }
   }
+
+  export const userDetails = (response) => {
+      return{
+        type: 'USER-DETAILS',
+        payload: response
+      }
+    }

@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {refreshUsers} from '../actions/index.js';
+import {refreshUsers,userDetails} from '../actions/index.js';
 
 class UsersList extends Component {
-    state = {
-        followers: 0
-    }
+
     async getUsers(txt){
             let res = await fetch(`https://api.github.com/search/users?q=${txt}`)
             res =  await res.json()
@@ -19,11 +17,14 @@ class UsersList extends Component {
             }) : undefined;
     }
 
-    async getFollowers(txt){
+    async getFollowers(txt,index){
+      console.log(txt,index);
       let response = await fetch(`https://api.github.com/users/${txt}`)
       response =  await response.json()
-      this.setState({followers:response.followers})
-      console.log(this.state.followers)
+      this.props.userDetails({
+        index: index,
+        followers: response.followers
+      })
     }
     render(){
         return(
@@ -35,7 +36,8 @@ class UsersList extends Component {
                     this.props.users.users.length > 0 ?
                     this.props.users.users.map((item,index) => {
               return(
-                        <li key={index} onClick={(e) => this.getFollowers(item.login)}>{item.login}</li>
+                        <li key={index} onClick={(e) => this.getFollowers(item.login)}>{item.login}
+                                               {item.followers &&  <span>  Followers: {item.followers}</span>}</li>
               );
             }) : undefined
             }
@@ -51,7 +53,7 @@ function mapStateToProps(state){
   }
   
   function mapDispatchToProps(dispatch){
-    return bindActionCreators({refreshUsers:refreshUsers },dispatch)
+    return bindActionCreators({refreshUsers:refreshUsers, userDetails:userDetails},dispatch)
   }
 
 export default connect(mapStateToProps,mapDispatchToProps)(UsersList);

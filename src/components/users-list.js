@@ -9,7 +9,6 @@ class UsersList extends Component {
     async getUsers(txt){
             let res = await fetch(`https://api.github.com/search/users?q=${txt}`)
             res =  await res.json()
-            console.log(res);
             res.items ?
             this.props.refreshUsers({
                 totalCount: res.total_count,
@@ -18,7 +17,6 @@ class UsersList extends Component {
     }
 
     async getFollowers(txt,index){
-      console.log(txt,index);
       let response = await fetch(`https://api.github.com/users/${txt}`)
       response =  await response.json()
       this.props.userDetails({
